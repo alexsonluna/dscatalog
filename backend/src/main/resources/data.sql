@@ -1,0 +1,3 @@
+INSERT INTO CAT_CATEGORIA (nome) VALUES  ('Livros');
+INSERT INTO CAT_CATEGORIA (nome) VALUES  ('Eletrônicos');
+INSERT INTO CAT_CATEGORIA (nome) VALUES  ('Computadores');
