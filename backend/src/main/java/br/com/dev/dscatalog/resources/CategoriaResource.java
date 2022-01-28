@@ -26,12 +26,12 @@ public class CategoriaResource {
 
 		return ResponseEntity.ok().body(lstCategoria);
 	}
-	
+
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<CategoriaDTO> findById(@PathVariable Long id) {
-		
+
 		CategoriaDTO dto = categoriaService.findById(id);
-		
+
 		return ResponseEntity.ok().body(dto);
 	}
 

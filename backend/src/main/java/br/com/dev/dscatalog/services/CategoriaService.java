@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.dev.dscatalog.dto.CategoriaDTO;
 import br.com.dev.dscatalog.entidades.Categoria;
 import br.com.dev.dscatalog.repository.CategoriaRepository;
+import br.com.dev.dscatalog.services.exceptions.EntityNotFoundException;
 
 @Service
 public class CategoriaService {
@@ -29,7 +30,7 @@ public class CategoriaService {
 	public CategoriaDTO findById(Long id) {
 		Optional<Categoria> optionalCategoria = repository.findById(id);
 
-		Categoria categoria = optionalCategoria.get();
+		Categoria categoria = optionalCategoria.orElseThrow(() -> new EntityNotFoundException("Objeto não endontrado"));
 
 		return new CategoriaDTO(categoria);
 	}
