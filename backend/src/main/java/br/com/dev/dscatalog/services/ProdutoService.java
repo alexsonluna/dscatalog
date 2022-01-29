@@ -12,8 +12,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.dev.dscatalog.dto.CategoriaDTO;
 import br.com.dev.dscatalog.dto.ProdutoDTO;
+import br.com.dev.dscatalog.entidades.Categoria;
 import br.com.dev.dscatalog.entidades.Produto;
+import br.com.dev.dscatalog.repository.CategoriaRepository;
 import br.com.dev.dscatalog.repository.ProdutoRepository;
 import br.com.dev.dscatalog.services.exceptions.DataBaseException;
 import br.com.dev.dscatalog.services.exceptions.ResourceNotFoundException;
@@ -23,6 +26,8 @@ public class ProdutoService {
 
 	@Autowired
 	private ProdutoRepository repository;
+	@Autowired
+	private CategoriaRepository categoriaRepository;
 
 	@Transactional(readOnly = true)
 	public Page<ProdutoDTO> findAllPaged(PageRequest pageRequest) {
@@ -35,16 +40,16 @@ public class ProdutoService {
 	public ProdutoDTO findById(Long id) {
 		Optional<Produto> optionalProduto = repository.findById(id);
 
-		Produto produto = optionalProduto
-				.orElseThrow(() -> new ResourceNotFoundException("Objeto não endontrado"));
+		Produto produto = optionalProduto.orElseThrow(() -> new ResourceNotFoundException("Objeto não endontrado"));
 
-		return new ProdutoDTO(produto,produto.getLstCategoria());
+		return new ProdutoDTO(produto, produto.getLstCategoria());
 	}
 
 	@Transactional
 	public ProdutoDTO insert(ProdutoDTO dto) {
 		Produto produto = new Produto();
-//		produto.setNome(dto.getNome());
+
+		copiarDtoParaEntidade(dto, produto);
 
 		produto = repository.save(produto);
 
@@ -56,8 +61,7 @@ public class ProdutoService {
 
 		try {
 			Produto produto = repository.getOne(id);
-
-//			produto.setNome(dto.getNome());
+			copiarDtoParaEntidade(dto, produto);
 
 			produto = repository.save(produto);
 
@@ -78,6 +82,22 @@ public class ProdutoService {
 		} catch (DataIntegrityViolationException e) {
 			throw new DataBaseException("Violação de Integridade");
 		}
+	}
+
+	private void copiarDtoParaEntidade(ProdutoDTO dto, Produto produto) {
+
+		produto.setNome(dto.getNome());
+		produto.setPreco(dto.getPreco());
+		produto.setDescricao(dto.getDescricao());
+		produto.setData(dto.getData());
+		produto.setImgUrl(dto.getImgUrl());
+
+		produto.getLstCategoria().clear();
+		for (CategoriaDTO catDto : dto.getLstCategoriaDTO()) {
+			Categoria categoria = categoriaRepository.getOne(catDto.getId());
+			produto.getLstCategoria().add(categoria);
+		}
+
 	}
 
 }
