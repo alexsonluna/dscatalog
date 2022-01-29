@@ -26,12 +26,13 @@ public class Produto implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String nome;
+	@Column(columnDefinition = "TEXT")
 	private String descricao;
 	private Double preco;
 	private String imgUrl;
 
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-	private Instant dataCadastro;
+	private Instant data;
 
 	@ManyToMany
 	@JoinTable(name = "PRC_PRODUTO_CATEGORIA", joinColumns = @JoinColumn(name = "produto_id"), inverseJoinColumns = @JoinColumn(name = "categoria_id"))
@@ -46,7 +47,7 @@ public class Produto implements Serializable {
 		this.descricao = descricao;
 		this.preco = preco;
 		this.imgUrl = imgUrl;
-		this.dataCadastro = dataCadastro;
+		this.data = data;
 	}
 
 	public Long getId() {
@@ -89,12 +90,12 @@ public class Produto implements Serializable {
 		this.imgUrl = imgUrl;
 	}
 
-	public Instant getDataCadastro() {
-		return dataCadastro;
+	public Instant getData() {
+		return data;
 	}
 
-	public void setDataCadastro(Instant dataCadastro) {
-		this.dataCadastro = dataCadastro;
+	public void setData(Instant data) {
+		this.data = data;
 	}
 
 	public Set<Categoria> getLstCategoria() {
